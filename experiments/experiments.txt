@@ -1,0 +1,51 @@
+Last price model:
+
+{'count': 2467168, 'mse': array([1.96210228]), 'rmse': array([1.40075061]), 'mae': array([0.38885402]), 'avg_spread': array([0.]), 'labels': ['price']}
+{'count': 2460000, 'mse': array([1.9655944]), 'rmse': array([1.40199657]), 'mae': array([0.38855056]), 'avg_spread': array([0.]), 'labels': ['price']}
+
+Exponential moving average model (with 10 sequence length):
+
+{'count': 2467168, 'mse': array([0.46945862]), 'rmse': array([0.68517051]), 'mae': array([0.33759043]), 'avg_spread': array([0.]), 'labels': ['price']}
+{'count': 2460000, 'mse': array([0.46841351]), 'rmse': array([0.68440742]), 'mae': array([0.33699538]), 'avg_spread': array([0.]), 'labels': ['price']}
+{'count': 2407454, 'mse': array([0.47360691]), 'rmse': array([0.68819104]), 'mae': array([0.34004659]), 'avg_spread': array([0.]), 'labels': ['price']}
+
+EMA Feed Forward Network (1 epoch):
+
+{'count': 2460000, 'mse': array([0.45635515]), 'rmse': array([0.67554063]), 'mae': array([0.32778032]), 'avg_spread': array([0.16438301]), 'labels': ['price']}
+
+EMA Feed Forward Network (46 epochs):
+{'count': 2460000, 'mse': array([0.419998]), 'rmse': array([0.64807253]), 'mae': array([0.31118124]), 'avg_spread': array([0.22826891]), 'labels': ['price']}
+
+EMA Feed Forward Network (Finished):
+
+{'count': 2460000, 'mse': array([0.37590496]), 'rmse': array([0.61311089]), 'mae': array([0.29321411]), 'avg_spread': array([0.24289673]), 'labels': ['price']}
+{'count': 2407454, 'mse': array([0.37986504]), 'rmse': array([0.61633192]), 'mae': array([0.29572497]), 'avg_spread': array([0.24363386]), 'labels': ['price']}
+
+   with updated v0.3 data:
+   {'count': 2417183, 'mse': array([0.81521156]), 'rmse': array([0.90289067]), 'mae': array([0.34481932]), 'avg_spread': array([0.24884063]), 'labels': ['price']}
+
+No EMA Feed Forward Neural Network:
+
+{'count': 2460000, 'mse': array([1.84670599]), 'rmse': array([1.35893561]), 'mae': array([0.34203303]), 'avg_spread': array([0.25160388]), 'labels': ['price']}
+
+No EMA Simple LSTM Model (Finished):
+
+{'count': 2465000, 'mse': array([1.93544811]), 'rmse': array([1.39120384]), 'mae': array([0.37762602]), 'avg_spread': array([0.1914706]), 'labels': ['price']}
+
+My Estimated "Competing" 
+
+{'count': 2467168, 'mse': array([0.96]), 'rmse': array([0.98]), 'mae': array([0.307]), 'avg_spread': array([0.]), 'labels': ['price']}
+
+
+Redo the Mean Squared Error (MSE graph) with:
+
+v0.3 Deep MM: 0.419998
+Competing Model: 0.96
+Last Price: 1.96210228
+
+Case Study Slide
+
+Dealer Improvement from Real-time Signal: 54 Basis Points yielding an improvement in risk-adjusted spread-capture P&L of 47%
+Hedge Fund Improvement from EOD Signal: 154 Basis Points yielding an improvement in risk-adjusted spread-capture P&L of 96%
+
+

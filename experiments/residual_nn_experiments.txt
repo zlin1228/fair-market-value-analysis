@@ -1,0 +1,13 @@
+'residual_nn': {
+                'width': 256,
+                'residual_blocks': 5,
+                'activation': 'relu',
+                'dropout': 0.5,
+                'epochs': 5000,
+                'optimizer': 'adadelta',
+                'load_checkpoint_filepath': 'checkpoints/residual_nn.v0.4.5.256',
+                'save_checkpoint_filepath': 'checkpoints/residual_nn.v0.4.5.256',
+                'history_filepath': 'history/residual_nn.v0.4.5.256.2'
+            },
+
+{'count': 1665182, 'mse': array([0.39110389]), 'rmse': array([0.62538299]), 'mae': array([0.34033611]), 'avg_spread': array([0.12498337]), 'labels': ['price']}

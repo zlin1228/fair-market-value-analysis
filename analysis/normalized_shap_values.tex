@@ -1,0 +1,145 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amsmath}
+
+\title{Analysis Of Normalized SHAP Values}
+\author{Nathaniel Powell}
+\date{April 2023}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+In this article, we investigate the impact of normalizing input and output features in a neural network for asset price time series prediction and the subsequent computation of SHAP values for feature importance. We explore two different approaches to handling normalization when computing SHAP values: including normalization layers within the TensorFlow/Keras model graph or keeping the normalization process outside the model graph and adjusting the SHAP values accordingly. We analyze the maintenance implications and potential challenges of each approach, ultimately opting to port the normalization code to the TensorFlow graph. This decision offers a more straightforward and maintainable implementation that simplifies future modifications to the normalization function and ensures the correct calculation of SHAP values.
+\end{abstract}
+
+\section{Introduction}
+
+We have a neural network implemented in Keras / TensorFlow which processes asset price time series data which is non-stationary. Machine-Learning models perform poorly when the applied to distributions which radically change over time. To mitigate this problem, we apply normalization to the input feature vector, and also for the output feature vector. As a simplified example, we can do this by subtracting the price of the most recent trade (the last price) from all of the prices in the input feature vector. We also subtract this price from the label, which is the price we're trying to predict. So the model is trained to predict the normalized price using the normalized input feature vector. To get the final price when actually using the model at inference time, we normalize the input feature vector, predict the normalized price, and then add back in the last price to get the final price prediction. This normalization and then de-normalization process before and after the model is currently implemented in NumPy, but it theoretically could be ported to TensorFlow layers which would fit in before the existing model's graph to normalize the input features, and a layer at the end to de-normalize the final price output of the model. 
+
+We want to compute the relative percentage importance of the change (from a baseline / background input) in each of the non-normalized input features for the change in the final predicted price output. There are two obvious ways we could utilize a SHAP library in python to do this:
+
+\begin{enumerate}
+    \item We could port the normalization functionality from Numpy to the TensorFlow / Keras model graph, and then compute SHAP values as normal. No special math would be required, but some Numpy operations can be confusing to port over, but it would also have the side benefit of simplifying our code base so that we no longer have to account for and work with the fact that there is normalization happening before and after the TensorFlow class. For example, we could eliminate the NormalizedGenerator, which is a class which wraps the training data and inference data generator class. There's also other code we could eliminate for evaluating and comparing models which could be simplified if we ported the normalization to be part of the TensorFlow graph.
+    \item To eliminate the confusion involved in porting the Numpy code over to the TensorFlow / Keras graph of the model, we could just compute SHAP feature importance attribution of a new inference versus an old / baseline / background inference by carefully adjusting the attribution percentage values to account for the normalization. Mainly what we would have to do is to add the change in price from the change in the "last price" normalization factor (let's call this factor h(x)) attributable to each of the features to their shapely values, and then compute the feature importance vector. If the normalization factor h(x) is just the "last price", this means all we have to do is attribute all of the change in w to this last price input feature, and add this additional attribution to the last price feature SHAP value. There is a big complication to this though, which is that we also have to implement the model using a different normalization factor which is a more complicated function of the input features. We could call this normalization factor g(x), where x is the input feature vector. To add the attribution of adding the change in normalization factor to the feature vectors' SHAP values, we would have to correctly account for the partial derivatives of g(x) the same way the SHAP library does. We can assume though that there is a simple analytical partial derivative of g(x) that we can write out, so this is not impossibly complicated or anything, it's just that it's more code to maintain outside of the SHAP library rather than just taking advantage of each.
+\end{enumerate}
+
+\section{Analysis of Keeping Numpy Normalization Code Intact}
+
+Here we lay out what would have to be done to correctly calculate the feature importance of the final output price predictions (versus a baseline prediction, for example, which was made the same time of day on the previous business / trading day) using the SHAP library in the second case above, where we do the normalization outside of the graph, where we need to account for the effect of the normalization factor on the SHAP values. Let's denote the input feature vector as $\mathbf{x}$, the output price as $p$, the baseline input feature vector as $\mathbf{x'}$, and the normalization function as $g(\mathbf{x})$, and the neural network as the function $f(\mathbf{x})$. The SHAP values are computed for the normalized input and output. Therefore, we need to adjust the SHAP values to account for the effect of the normalization factor on the final predicted price.
+
+\subsection{Adjusting the SHAP values}
+Given the price prediction $p$ and the baseline price prediction $p'$, we have:
+
+\begin{equation}
+    p = f(\mathbf{x} - g(\mathbf{x})) + g(\mathbf{x})
+\end{equation}
+
+and
+
+\begin{equation}
+    p' = f(\mathbf{x'} - g(\mathbf{x'})) + g(\mathbf{x'}).
+\end{equation}
+
+Now, we can write the change in price, $\Delta p = p - p'$, as:
+
+\begin{equation}
+    \Delta p = f(\mathbf{x} - g(\mathbf{x})) - f(\mathbf{x'} - g(\mathbf{x'})) + g(\mathbf{x}) - g(\mathbf{x'})    
+\end{equation}
+
+Using Taylor series approximation, we can rewrite the change in price as:
+
+\begin{equation} \label{eq:taylor_approximate}
+    \Delta p \approx \nabla f(\mathbf{x'} - g(\mathbf{x'})) \cdot (\mathbf{x} - \mathbf{x'}) - \nabla g(\mathbf{x'}) \cdot (\mathbf{x} - \mathbf{x'})
+\end{equation}
+
+where $\nabla f(\mathbf{x'} - g(\mathbf{x'}))$ and $\nabla g(\mathbf{x'})$ are the gradients of the function $f$ and the normalization function $g$ with respect to the input features, respectively.
+
+\subsubsection{Taylor Series Approximation Derivation}
+
+The reason for using the first-order Taylor series approximation is that the SHAP values are essentially based on cooperative game theory, where they provide a way to fairly distribute the contribution of each feature to the model's output. In the case of a differentiable model, such as a neural network, this distribution can be approximated using the first-order Taylor series expansion.
+
+The Shapley values for each feature are calculated as a weighted average of the contributions of that feature to all possible coalitions of features. The SHAP values provide a fair allocation of the output difference between the prediction for a given input and the expected prediction for a reference (baseline) input.
+
+When the model is differentiable, the first-order Taylor series approximation is a good way to approximate the contributions of each feature to the output. In this context, the first-order Taylor series approximation captures the linear relationship between the input features and the output. This makes it suitable for capturing the contributions of each feature to the prediction, which is what the SHAP values are intended to represent.
+
+In our analysis, we used the first-order Taylor series approximation to account for the effect of the normalization factor on the SHAP values, since the SHAP values themselves are based on this linear approximation. This ensures that our adjusted SHAP values are consistent with the underlying methodology used by the SHAP library.
+
+Essentially what we are doing is creating our own mini-implementation of the SHAP library. We are reinventing the wheel.
+
+To derive equation \ref{eq:taylor_approximate}, a Taylor series approximation is used for a function's value at a given point by using its value and derivatives at another point. In this case, we're using a first-order Taylor series approximation to estimate the change in the price prediction function $f$ and the normalization function $g$.
+
+Let's denote the change in the input feature vector as $\Delta \mathbf{x} = \mathbf{x} - \mathbf{x'}$. Then, we can write the first-order Taylor series approximation for the functions $f$ and $g$ around the point $\mathbf{x'} - g(\mathbf{x'})$ and $\mathbf{x'}$, respectively, as:
+
+\begin{equation}
+    f(\mathbf{x} - g(\mathbf{x})) \approx f(\mathbf{x'} - g(\mathbf{x'})) + \nabla f(\mathbf{x'} - g(\mathbf{x'})) \cdot \Delta \mathbf{x}
+\end{equation}
+
+and
+
+\begin{equation}
+    g(\mathbf{x}) \approx g(\mathbf{x'}) + \nabla g(\mathbf{x'}) \cdot \Delta \mathbf{x}
+\end{equation}
+
+Now, substitute these approximations into the expression for the change in price, $\Delta p = p - p'$:
+
+\begin{equation}
+    \begin{split}
+        \Delta p \approx \left[ f(\mathbf{x'} - g(\mathbf{x'})) + \nabla f(\mathbf{x'} - g(\mathbf{x'})) \cdot \Delta \mathbf{x} \right] - f(\mathbf{x'} - g(\mathbf{x'})) \\
+        + \left[ g(\mathbf{x'}) + \nabla g(\mathbf{x'}) \cdot \Delta \mathbf{x} \right] - g(\mathbf{x'})
+    \end{split}
+\end{equation}
+ 
+Simplify the expression:
+
+\begin{equation}
+    \Delta p \approx \nabla f(\mathbf{x'} - g(\mathbf{x'})) \cdot \Delta \mathbf{x} + \nabla g(\mathbf{x'}) \cdot \Delta \mathbf{x}
+\end{equation}
+
+By using the first-order Taylor series approximation, we can estimate the change in price, $\Delta p$, as a linear combination of the change in input features, $\Delta \mathbf{x}$, and the gradients of the function $f$ and the normalization function $g$. This approximation allows us to adjust the SHAP values to account for the effect of the normalization factor on the final predicted price.
+
+\subsection{Computing the adjusted SHAP values}
+To compute the adjusted SHAP values, we need to add the contribution of the change in the normalization factor to the original SHAP values:
+
+\begin{equation}
+    \text{SHAP}_{\text{adj}}(\mathbf{x}) = \text{SHAP}(\mathbf{x}) + \nabla g(\mathbf{x'}) \cdot (\mathbf{x} - \mathbf{x'})
+\end{equation}
+
+This works because $\text{SHAP}(\mathbf{x}) \approx \nabla f(\mathbf{x'} - g(\mathbf{x'})) \cdot (\mathbf{x} - \mathbf{x'})$.
+
+\subsection{Maintenance Implications}
+
+So in the second case, where normalization is done outside the model graph, you would need to maintain the code for computing the gradients of the normalization function, $\nabla g(\mathbf{x'})$, and adjust the SHAP values accordingly. 
+
+\section{Simply Porting to Keras}
+
+On the other hand, there is no additional math needed if normalization is in the model graph, for if we include the normalization layers inside the model graph, we can directly use the SHAP library to compute the SHAP values without any additional math, as the library will automatically account for the normalization.
+
+In the first case, where the normalization layers are included in the model graph, you would need to port the normalization functionality from NumPy to TensorFlow/Keras but would not need to maintain any additional code for computing the SHAP values, as the library will handle the normalization automatically. Including the normalization layers in the model graph would also simplify the code base, as you mentioned, eliminating the need for a separate NormalizedGenerator class and potentially simplifying other parts of the code as well.
+
+\section{My Decision}
+
+Imagine if someone new were to join the team, and I asked them to try a different normalization function than $g(\mathbf{x})$. If the normalization code is in the TensorFlow / Keras graph, they would have to learn how to do TensorFlow operations in the graph, but other than that there would be nothing else to implement. Many people available on the job market are familiar enough with TensorFlow and Keras to be able to perform this task. Far fewer are familiar with how to correctly compute the partial derivatives or SHAP values on $g(\mathbf{x})$ outside of the library, and they would also have to learn about and maintain other parts of the SHAP-related code which makes assumptions about how the normalization operates. If the code is just in the Keras model implementation, they would perhaps only need to modify and test changes to one method.
+
+Even if we did implement the NumPy version of the SHAP calculations, I wouldn't know for sure if the implementation were correct, and for that reason we would need to implement the TensorFlow port version to compare with and verify. 
+
+We don't need to reinvent the wheel, and we will save a lot of money and time if we can keep things simple for the future, and rely on the tremendous research efforts which have been put into our chosen SHAP library.
+
+For these reasons, we are going to port the normalization code to the TensorFlow graph. It may seem complicated in the short term, but it will save us a lot of maintenance time in the future. 
+
+\section{Implementation Steps}
+
+\begin{enumerate}
+    \item \label{item:last_price_port} Port the ``last price" normalization code to TF / Keras
+    \item Test to see if the normalization is identical to the old implementation
+    \item \label{item:last_price_unit_tests} Add unit tests for new version on the model code
+    \item Integrate the SHAP value calculation for feature importance, so that we output it as part of our websocket API
+    \item Implement regression testing on the new version of the fmv websocket server code.
+    \item Repeat steps \ref{item:If you can add this last_price_port} to \ref{item:last_price_unit_tests} for the ``EMA" normalization version.
+    \item Submit a PR, and once it is approved, merge it to main
+    \item Deploy to production
+\end{enumerate}
+
+\end{document}

@@ -1,0 +1,18 @@
+LastPrice:
+
+{'count': 1198198, 'mse': array([1.16310774]), 'rmse': array([1.07847473]), 'mae': array([0.4053575]), 'avg_spread': array([0.]),
+                   'vw_mse': array([1.34313323]), 'vw_rmse': array([1.15893625]), 'vw_mae': array([0.41058645]), 'vw_avg_spread': array([0.]), 'labels': ['price']}
+
+EMA (Sequence 10):
+
+{'count': 1198198, 'mse': array([1.62973438]), 'rmse': array([1.27661051]), 'mae': array([0.48251402]), 'avg_spread': array([0.]),
+                   'vw_mse': array([2.09250158]), 'vw_rmse': array([1.44654816]), 'vw_mae': array([0.54243539]), 'vw_avg_spread': array([0.]), 'labels': ['price']}
+
+VolumeWeightedAveragePrice (Sequence 10):
+
+{'count': 1198198, 'mse': array([2.33234103]), 'rmse': array([1.52720039]), 'mae': array([0.56716239]), 'avg_spread': array([0.]),
+                   'vw_mse': array([2.79866901]), 'vw_rmse': array([1.6729223]), 'vw_mae': array([0.61200471]), 'vw_avg_spread': array([0.]), 'labels': ['price']}
+
+VolumeWeightedExponentialMovingAveragePrice (Sequence 10):
+{'count': 1198198, 'mse': array([1.95656657]), 'rmse': array([1.39877324]), 'mae': array([0.51738893]), 'avg_spread': array([0.]),
+                   'vw_mse': array([2.29634762]), 'vw_rmse': array([1.51537046]), 'vw_mae': array([0.54388374]), 'vw_avg_spread': array([0.]), 'labels': ['price']}

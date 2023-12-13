@@ -1,0 +1,16 @@
+boto3
+coverage
+Cython
+GitPython
+jsonpath_ng
+lz4
+numpy
+pandas
+pandas_market_calendars
+pyarrow
+pypubsub
+requests
+seaborn
+tables
+testresources
+websockets

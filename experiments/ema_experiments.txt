@@ -1,0 +1,84 @@
+v0.3:
+
+EMA Sequence 10
+
+{'count': 1198198, 'mse': array([1.62973438]), 'rmse': array([1.27661051]), 'mae': array([0.48251402]), 'avg_spread': array([0.]), 'labels': ['price']}
+
+ENA Sequence 9
+
+{'count': 1198198, 'mse': array([1.55891845]), 'rmse': array([1.24856656]), 'mae': array([0.47083364]), 'avg_spread': array([0.]), 'labels': ['price']}
+
+
+
+
+v0.4:
+
+LastPriceModel
+{'count': 1209933, 'mse': array([3.17988479]), 'rmse': array([1.78322315]), 'mae': array([0.49536303]), 'avg_spread': array([0.]), 'labels': ['price']}
+{'count': 1198198, 'mse': array([1.16310774]), 'rmse': array([1.07847473]), 'mae': array([0.4053575]), 'avg_spread': array([0.]), 'labels': ['price']}
+
+FeedForwardNN with EMA Sequence 10:
+
+{'count': 1198198, 'mse': array([1.26979168]), 'rmse': array([1.12685034]), 'mae': array([0.43864853]), 'avg_spread': array([0.22068391]), 'labels': ['price']}
+
+VWAP Sequence 10:
+{'count': 1198198, 'mse': array([2.33234103]), 'rmse': array([1.52720039]), 'mae': array([0.56716239]), 'avg_spread': array([0.]), 'labels': ['price']}
+
+VWAP Sequence 20:
+{'count': 1198198, 'mse': array([3.43574365]), 'rmse': array([1.85357591]), 'mae': array([0.72273349]), 'avg_spread': array([0.]), 'labels': ['price']}
+
+EMA Sequence 10:
+
+{'count': 1198198, 'mse': array([1.62973438]), 'rmse': array([1.27661051]), 'mae': array([0.48251402]), 'avg_spread': array([0.]), 'labels': ['price']}
+
+
+EMA Sequence 8:
+{'count': 1198198, 'mse': array([1.48812912]), 'rmse': array([1.21988898]), 'mae': array([0.45916211]), 'avg_spread': array([0.]), 'labels': ['price']}
+
+EMA Sequence 5:
+{'count': 1198198, 'mse': array([1.2830725]), 'rmse': array([1.1327279]), 'mae': array([0.42548541]), 'avg_spread': array([0.]), 'labels': ['price']}
+
+EMA Sequence 4:
+{'count': 1198198, 'mse': array([1.22335072]), 'rmse': array([1.10605186]), 'mae': array([0.41590403]), 'avg_spread': array([0.]), 'labels': ['price']}
+
+EMA Sequence 3:
+{'count': 1198198, 'mse': array([1.17489025]), 'rmse': array([1.08392354]), 'mae': array([0.40834542]), 'avg_spread': array([0.]), 'labels': ['price']}
+
+EMA Sequence 2:
+{'count': 1198198, 'mse': array([1.14900998]), 'rmse': array([1.07191883]), 'mae': array([0.40431133]), 'avg_spread': array([0.]), 'labels': ['price']}
+
+EMA Sequence 1:
+{'count': 1198198, 'mse': array([1.16310774]), 'rmse': array([1.07847473]), 'mae': array([0.4053575]), 'avg_spread': array([0.]), 'labels': ['price']}
+
+
+VWEMA Sequence 10:
+
+{'count': 1198198, 'mse': array([1.95656657]), 'rmse': array([1.39877324]), 'mae': array([0.51738893]), 'avg_spread': array([0.]), 'labels': ['price']}
+
+VWEMA Sequence 11:
+
+{'count': 1198198, 'mse': array([2.04843988]), 'rmse': array([1.43123718]), 'mae': array([0.53084939]), 'avg_spread': array([0.]), 'labels': ['price']}
+
+VWEMA Sequence 9:
+{'count': 1198198, 'mse': array([1.86586843]), 'rmse': array([1.36596795]), 'mae': array([0.50363487]), 'avg_spread': array([0.]), 'labels': ['price']}
+
+VWEMA Sequence 8:
+{'count': 1198198, 'mse': array([1.77091371]), 'rmse': array([1.33075682]), 'mae': array([0.48960246]), 'avg_spread': array([0.]), 'labels': ['price']}
+
+VWEMA Sequence 7:
+{'count': 1198198, 'mse': array([1.67336714]), 'rmse': array([1.29358693]), 'mae': array([0.47530056]), 'avg_spread': array([0.]), 'labels': ['price']}
+
+VWEMA Sequence 5:
+{'count': 1198198, 'mse': array([1.47269647]), 'rmse': array([1.21354706]), 'mae': array([0.44650715]), 'avg_spread': array([0.]), 'labels': ['price']}
+
+VWEMA Sequence 4
+{'count': 1198198, 'mse': array([1.3714663]), 'rmse': array([1.1710962]), 'mae': array([0.4324712]), 'avg_spread': array([0.]), 'labels': ['price']}
+
+VWEMA Sequence 3:
+{'count': 1198198, 'mse': array([1.28244885]), 'rmse': array([1.13245258]), 'mae': array([0.42031339]), 'avg_spread': array([0.]), 'labels': ['price']}
+
+VWEMA Sequence 2:
+{'count': 1198198, 'mse': array([1.19706522]), 'rmse': array([1.09410476]), 'mae': array([0.4111905]), 'avg_spread': array([0.]), 'labels': ['price']}
+
+VWEMA Sequence 1:
+{'count': 1198198, 'mse': array([1.16310774]), 'rmse': array([1.07847473]), 'mae': array([0.4053575]), 'avg_spread': array([0.]), 'labels': ['price']}
