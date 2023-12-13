@@ -13,7 +13,7 @@
             "justMyCode": true,
             "args": ["{ \"$.server.fmv.port\": \"8855\", \"$.server.fmv.memorydb.propogation_wait_time\": 0 }"],
             "env": {
-                "DEEPMM_MEMORYDB_API_KEY": "GXt05OW5o73fQY5XSoGf15JqD3x06IHf3app2yQ6"
+                "DEEPMM_MEMORYDB_API_KEY": "UNDEFINED"
             },
             "cwd": "${workspaceFolder}/src"
         },
