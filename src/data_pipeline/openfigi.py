@@ -20,7 +20,6 @@ import time
 
 import requests
 
-_API_KEY = '90c42b28-3cdb-4b56-b54c-f26199c33452'
 _MAX_JOBS_PER_REQUEST = 100
 _MIN_REQUEST_INTERVAL = 6 / 25  # 25 per 6 seconds
 
